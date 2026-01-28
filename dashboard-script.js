@@ -9,6 +9,13 @@ window.onload = function() {
     document.getElementById("sup-id").innerText = `ID: ${id}`;
     document.getElementById("avatar").innerText = name.charAt(0).toUpperCase();
 
+    // 1. Instant Load from Cache
+    const cachedTeam = localStorage.getItem("teamData");
+    if (cachedTeam) {
+        displayTeam(JSON.parse(cachedTeam));
+    }
+
+    // 2. Background Refresh (Updates the list silently)
     loadTeam(id);
     loadHistory(id);
 };
@@ -17,12 +24,23 @@ function loadTeam(supId) {
     fetch(`${scriptURL}?action=getTeam&teamCode=${supId}`)
     .then(res => res.json())
     .then(data => {
-        const list = document.getElementById("team-list");
-        list.innerHTML = "";
-        data.forEach(emp => {
-            list.innerHTML += `<tr><td>${emp.empId}</td><td>${emp.empName}</td>
-            <td><button onclick="openModal('${emp.empId}','${emp.empName}')" style="background:#2563eb; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Mark</button></td></tr>`;
-        });
+        // Save to cache for next time
+        localStorage.setItem("teamData", JSON.stringify(data));
+        displayTeam(data);
+    })
+    .catch(err => console.error("Could not refresh team in background", err));
+}
+
+// Helper function to show the list on screen
+function displayTeam(data) {
+    const list = document.getElementById("team-list");
+    list.innerHTML = "";
+    data.forEach(emp => {
+        list.innerHTML += `<tr>
+            <td>${emp.empId}</td>
+            <td>${emp.empName}</td>
+            <td><button onclick="openModal('${emp.empId}','${emp.empName}')" style="background:#2563eb; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Mark</button></td>
+        </tr>`;
     });
 }
 
@@ -71,7 +89,6 @@ function submitLeave() {
             closeModal();
             loadHistory(localStorage.getItem("supervisorId"));
         } else {
-            // This displays the "Leave already posted" error from Code.gs
             alert("Error: " + response.error);
         }
     })
@@ -82,4 +99,7 @@ function submitLeave() {
     });
 }
 
-function logout() { localStorage.clear(); window.location.href = "index.html"; }
+function logout() { 
+    localStorage.clear(); 
+    window.location.href = "index.html"; 
+}

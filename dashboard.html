@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Leave Manager</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --white: #ffffff; --text: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: var(--white); padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .avatar { width: 45px; height: 45px; background: #e0f2fe; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; padding: 12px; color: #64748b; font-size: 13px; border-bottom: 2px solid var(--bg); }
+        td { padding: 12px; border-bottom: 1px solid var(--bg); }
+        
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .badge-sick { background: #fee2e2; color: #991b1b; }
+        .badge-casual { background: #dcfce7; color: #166534; }
+        .badge-annual { background: #e0f2fe; color: #075985; }
+        .badge-lwp { background: #f1f5f9; color: #475569; } /* NEW: LWP Style */
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; width: 350px; margin: 10% auto; padding: 25px; border-radius: 15px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="avatar" id="avatar">S</div>
+            <div>
+                <h2 id="greeting" style="margin:0; font-size: 18px;">Welcome</h2>
+                <small id="sup-id" style="color: #64748b;"></small>
+            </div>
+        </div>
+        <button onclick="logout()" style="background: none; border: 1px solid #fee2e2; color: #ef4444; padding: 8px 15px; border-radius: 8px; cursor: pointer;">Logout</button>
+    </div>
+
+    <h3>Team Members</h3>
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Action</th></tr></thead>
+        <tbody id="team-list"></tbody>
+    </table>
+
+    <h3 style="margin-top: 40px;">Recent Activity</h3>
+    <table>
+        <thead><tr><th>Emp ID</th><th>Date</th><th>Type</th></tr></thead>
+        <tbody id="history-list"></tbody>
+    </table>
+</div>
+
+<div id="leaveModal" class="modal">
+    <div class="modal-content">
+        <h3>Mark Leave</h3>
+        <p id="targetName"></p>
+        <input type="hidden" id="targetId">
+        <label>From Date</label><input type="date" id="fromDate">
+        <label>To Date</label><input type="date" id="toDate">
+        <label>Type</label>
+        <select id="leaveType">
+            <option value="Sick">Sick Leave</option>
+            <option value="Casual">Casual Leave</option>
+            <option value="Annual">Annual Leave</option>
+            <option value="LWP">Leave Without Pay</option>
+        </select>
+        <button class="btn-main" id="subBtn" onclick="submitLeave()">Save Entry</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; margin-top:10px; color:#64748b; cursor:pointer;">Cancel</button>
+    </div>
+</div>
+
+<script src="dashboard-script.js"></script>
+</body>
+</html>
